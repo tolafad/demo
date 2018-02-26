@@ -48,7 +48,6 @@ public class GildedRoseTest {
         items.add(item);
         GildedRose.updateQuality(items);
         assertItem(GildedRose.AGED_BRIE, 1, 1, items.get(0));
-
     }
 
     @Test
@@ -58,18 +57,17 @@ public class GildedRoseTest {
         items.add(item);
         GildedRose.updateQuality(items);
         assertItem(GildedRose.AGED_BRIE, 4, 50, items.get(0));
-
     }
 
     @Test
-    public void testQualityIsNeverMoreThan50_WhenQualityIsMoreThan50() {
+    public void testQualityIsNeverMoreThan50_WhenInitialQualityIsMoreThan50() {
         Item item = new Item(GildedRose.AGED_BRIE, 5, 51);
         List<Item> items = new ArrayList<Item>();
         items.add(item);
         GildedRose.updateQuality(items);
         assertItem(GildedRose.AGED_BRIE, 4, 50, items.get(0));
-
     }
+    
     @Test
     public void testSulfurasNeverDecreasesInQuality() {
         Item item = new Item(GildedRose.SULFURAS_HAND_OF_RAGNAROS, 0, 80);
@@ -108,7 +106,20 @@ public class GildedRoseTest {
     
     @Test
     public void testConjuredItemsDecreaseInQualityTwiceAsFast() {
-        fail();
+        Item item = new Item(GildedRose.CONJURED_MANA_CAKE, 10, 5);
+        List<Item> items = new ArrayList<Item>();
+        items.add(item);
+        GildedRose.updateQuality(items);
+        assertItem(GildedRose.CONJURED_MANA_CAKE, 9, 3, items.get(0));
+    }
+    
+    @Test
+    public void testConjuredItemsDecreaseInQualityTwiceAsFastAfterSellIn() {
+        Item item = new Item(GildedRose.CONJURED_MANA_CAKE, 0, 5);
+        List<Item> items = new ArrayList<Item>();
+        items.add(item);
+        GildedRose.updateQuality(items);
+        assertItem(GildedRose.CONJURED_MANA_CAKE, -1, 1, items.get(0));
     }
     
     private void assertItem(String name, int sellIn, int quality,Item item) {

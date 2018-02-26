@@ -3,8 +3,8 @@ import java.util.List;
 
 public class GildedRose {
 
-    private static final String CONJURED_MANA_CAKE = "Conjured Mana Cake";
     private static final int MAX_QUALITY = 50;
+    static final String CONJURED_MANA_CAKE = "Conjured Mana Cake";
     static final String ELIXIR_OF_THE_MONGOOSE = "Elixir of the Mongoose";
     static final String ITEM_5_DEXTERITY_VEST = "+5 Dexterity Vest";
     static final String SULFURAS_HAND_OF_RAGNAROS = "Sulfuras, Hand of Ragnaros";
@@ -26,8 +26,23 @@ public class GildedRose {
         items.add(new Item(SULFURAS_HAND_OF_RAGNAROS, 0, 80));
         items.add(new Item(BACKSTAGE_PASSES_TO_A_TAFKAL80ETC_CONCERT, 15, 20));
         items.add(new Item(CONJURED_MANA_CAKE, 3, 6));
-
+        
+        System.out.println("Before update ");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~\n ");     
+        printItems(items);
+        
         updateQuality(items);
+        
+        System.out.println("\nAfter update ");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~ ");
+        printItems(items);
+    }
+
+    private static void printItems(List<Item> items) {
+        for (Item item : items) {
+            System.out
+                .println("Item [name=" + item.getName() + ", sellIn=" + item.getSellIn() + ", quality=" + item.getQuality() + "]");
+        }
     }
 
     public static void updateQuality(List<Item> items) {
@@ -36,7 +51,7 @@ public class GildedRose {
         }
     }
 
-    public static void updateAnItem(Item item) {
+    private static void updateAnItem(Item item) {
         updateQuality(item);
         updateSellIn(item);
         updateQualityWhenSellInHasEnded(item);
@@ -44,16 +59,15 @@ public class GildedRose {
 
     private static void updateQuality(Item item) {
         if (isAgedBrie(item)) {
-            incrementQuality(item);            
-        }
-        else if (isBackStageToConcert(item)) {
+            incrementQuality(item);
+        } else if (isBackStageToConcert(item)) {
             incrementQuality(item);
 
-            if (item.getSellIn() < 11) {
+            if (item.getSellIn() <= 10) {
                 incrementQuality(item);
             }
 
-            if (item.getSellIn() < 6) {
+            if (item.getSellIn() <= 5) {
                 incrementQuality(item);
             }
 
@@ -93,19 +107,25 @@ public class GildedRose {
     }
 
     private static void incrementQuality(Item item) {
-        if (item.getQuality() < 50) {
+        if (item.getQuality() < MAX_QUALITY) {
             item.setQuality(item.getQuality() + 1);
-        }
-        else
+        } else
             item.setQuality(MAX_QUALITY);
     }
 
     private static void decrementQuality(Item item) {
         if (item.getQuality() > 0) {
-            if (!isSulfuras(item)) {
+            if (isConjuredManaCake(item)) {
+                item.setQuality(item.getQuality() - 2);
+            } else if (!isSulfuras(item)) {
                 item.setQuality(item.getQuality() - 1);
             }
+
         }
+    }
+
+    private static boolean isConjuredManaCake(Item item) {
+        return CONJURED_MANA_CAKE.equals(item.getName());
     }
 
     private static boolean hasSellInEnded(Item item) {
